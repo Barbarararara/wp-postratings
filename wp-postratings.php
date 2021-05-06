@@ -3,7 +3,7 @@
 Plugin Name: WP-PostRatings
 Plugin URI: https://lesterchan.net/portfolio/programming/php/
 Description: Adds an AJAX rating system for your WordPress site's content.
-Version: 1.87
+Version: 1.89
 Author: Lester 'GaMerZ' Chan
 Author URI: https://lesterchan.net
 Text Domain: wp-postratings
@@ -11,7 +11,7 @@ Text Domain: wp-postratings
 
 
 /*
-	Copyright 2019 Lester Chan (email: lesterchan@gmail.com)
+	Copyright 2020 Lester Chan (email: lesterchan@gmail.com)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin version
  * Set wp-postratings plugin version.
  */
-define( 'WP_POSTRATINGS_VERSION', '1.87' );
+define( 'WP_POSTRATINGS_VERSION', '1.89' );
 
 /**
  * Rating logs table name
@@ -287,10 +287,10 @@ function get_comment_authors_ratings() {
 	$comment_authors_ratings_results = null;
 	if ( !is_feed() && !is_admin() ) {
 		$comment_authors_ratings = array();
-		if ( $post && $post->ID ) {
+		if ( ! empty( $post ) && ! empty( $post->ID ) ) {
 			$comment_authors_ratings_results = $wpdb->get_results( $wpdb->prepare( "SELECT rating_username, rating_rating, rating_ip FROM {$wpdb->ratings} WHERE rating_postid = %d", $post->ID ) );
 		}
-		if ( $comment_authors_ratings_results ) {
+		if ( ! empty( $comment_authors_ratings_results ) && is_array( $comment_authors_ratings_results ) ) {
 			foreach ( $comment_authors_ratings_results as $comment_authors_ratings_result ) {
 				$comment_author = stripslashes( $comment_authors_ratings_result->rating_username );
 				$comment_authors_ratings[ $comment_author ] = $comment_authors_ratings_result->rating_rating;
@@ -680,7 +680,7 @@ function manage_ratings()
 							}
 						} else {
 							for($j = 1; $j < ($i+1); $j++) {
-								echo '<img src="'.$postratings_url.'/'.$postratings_image.'/rating_on.'.RATINGS_IMG_EXT.'" alt="rating_on.'.RATINGS_IMG_EXT.'" class="post-ratings-image" />';
+								echo '<img src="'.$postratings_url.'/'.$postratings_image.'/rating_on.'.RATINGS_IMG_EXT.'" alt="rating_on.'.RATINGS_IMG_EXT.'" width="12" height="12" class="post-ratings-image" />';
 							}
 						}
 						if(is_rtl() && file_exists($postratings_path.'/'.$postratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT)) {
@@ -918,22 +918,22 @@ function get_ratings_images($ratings_custom, $ratings_max, $post_rating, $rating
 	$ratings_image = esc_attr( $ratings_image );
 	$image_alt = apply_filters( 'wp_postratings_ratings_image_alt', $image_alt );
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	if($ratings_custom) {
 		for($i=1; $i <= $ratings_max; $i++) {
 			if($i <= $post_rating) {
-				$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			} elseif($i === $insert_half) {
 				if (is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half-rtl.'.RATINGS_IMG_EXT)) {
-					$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half-rtl.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+					$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 				} else {
-					$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+					$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 				}
 			} else {
-				$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			}
 		}
 	} else {
@@ -952,9 +952,9 @@ function get_ratings_images($ratings_custom, $ratings_max, $post_rating, $rating
 		}
 	}
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	return $ratings_images;
 }
@@ -965,9 +965,9 @@ function get_ratings_images_vote($post_id, $ratings_custom, $ratings_max, $post_
 	$ratings_images = '';
 	$ratings_image = esc_attr( $ratings_image );
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	if($ratings_custom) {
 		for($i=1; $i <= $ratings_max; $i++) {
@@ -980,15 +980,15 @@ function get_ratings_images_vote($post_id, $ratings_custom, $ratings_max, $post_
 			$ratings_text_js = esc_js( $ratings_text );
 			$image_alt = apply_filters( 'wp_postratings_ratings_image_alt', $ratings_text );
 			if($i <= $post_rating) {
-				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 			} elseif($i == $insert_half) {
 				if ($use_half_rtl) {
-					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half-rtl.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 				} else {
-					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_half.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 				}
 			} else {
-				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 			}
 		}
 	} else {
@@ -1002,22 +1002,22 @@ function get_ratings_images_vote($post_id, $ratings_custom, $ratings_max, $post_
 			$ratings_text_js = esc_js( $ratings_text );
 			$image_alt = apply_filters( 'wp_postratings_ratings_image_alt', $ratings_text );
 			if($i <= $post_rating) {
-				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 			} elseif($i == $insert_half) {
 				if ($use_half_rtl) {
-					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_half-rtl.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_half-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 				} else {
-					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_half.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+					$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_half.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 				}
 			} else {
-				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_off.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
+				$ratings_images .= '<img id="rating_'.$post_id.'_'.$i.'" src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_off.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" onmouseover="current_rating('.$post_id.', '.$i.', \''.$ratings_text_js.'\');" onmouseout="ratings_off('.$post_rating.', '.$insert_half.', '.$use_half_rtl.');" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;" />';
 			}
 		}
 	}
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	return $ratings_images;
 }
@@ -1029,37 +1029,37 @@ function get_ratings_images_comment_author($ratings_custom, $ratings_max, $comme
 	$image_alt = esc_attr( $image_alt );
 	$ratings_image = esc_attr( $ratings_image );
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_start.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	if($ratings_custom && $ratings_max == 2) {
 		if($comment_author_rating > 0) {
-			$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_2_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+			$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_2_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 		} else {
-			$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_1_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+			$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_1_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 		}
 	} elseif($ratings_custom) {
 		for($i=1; $i <= $ratings_max; $i++) {
 			if($i <= $comment_author_rating) {
-				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			} else {
-				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_'.$i.'_off.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			}
 		}
 	} else {
 		for($i=1; $i <= $ratings_max; $i++) {
 			if($i <= $comment_author_rating) {
-				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_on.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_on.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			} else {
-				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_off.'.RATINGS_IMG_EXT).'" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
+				$ratings_images .= '<img src="'.plugins_url('wp-postratings/images/'.$ratings_image.'/rating_off.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="'.$image_alt.'" title="'.$image_alt.'" class="post-ratings-image" />';
 			}
 		}
 	}
 	if(is_rtl() && file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end-rtl.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	} elseif(file_exists(WP_PLUGIN_DIR.'/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT)) {
-		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" alt="" class="post-ratings-image" />';
+		$ratings_images .= '<img src="'.plugins_url('/wp-postratings/images/'.$ratings_image.'/rating_end.'.RATINGS_IMG_EXT).'" width="12" height="12" alt="" class="post-ratings-image" />';
 	}
 	return $ratings_images;
 }
@@ -1181,20 +1181,20 @@ function expand_ratings_template($template, $post_data, $post_ratings_data = nul
 
 	if ( strpos( $template, '%POST_EXCERPT%') !== false ) {
 		if ( get_the_ID() !== $post_id ) {
-			$post = &get_post($post_id);
+			$post = get_post($post_id);
 		}
 		$post_excerpt = ratings_post_excerpt( $post_id, $post->post_excerpt, $post->post_content );
 		$value = str_replace('%POST_EXCERPT%', $post_excerpt, $value );
 	}
 	if ( strpos( $template, '%POST_CONTENT%' ) !== false ) {
 		if ( get_the_ID() !== $post_id ) {
-			$post = &get_post( $post_id );
+			$post = get_post( $post_id );
 		}
 		$value = str_replace('%POST_CONTENT%', get_the_content(), $value );
 	}
 	if ( strpos( $template, '%POST_THUMBNAIL%') !== false ) {
 		if ( get_the_ID() !== $post_id ) {
-			$post = &get_post( $post_id );
+			$post = get_post( $post_id );
 		}
 		$value = str_replace( '%POST_THUMBNAIL%', get_the_post_thumbnail( $post, 'thumbnail' ), $value );
 	}
